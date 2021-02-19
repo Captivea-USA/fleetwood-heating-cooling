@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <templates id="pos_order_note_template" inherit_id="point_of_sale.template" xml:space="preserve">
+
+ <!-- PosBagWidget -->
+
+    <t t-name="ProductScreen" t-inherit="point_of_sale.ProductScreen" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('subpads')]" position="before">
+            <!-- <div style="width:94%;"> -->
+                <PosNoteWidget style="width:94%; font-size:13pt;"/>
+            <!-- </div> -->
+        </xpath>
+    </t>
+   
+    <t t-name="PosNoteWidget" name="Pos Note Widget" owl="1">
+      <div class="control-button button confirm" id="pos_bag" style="background-color:#6ec89b; color: #fff;" t-on-click="button_click">
+                    Note  
+        </div>
+	</t>
+
+    <t t-name="PosOrderNotePopupWidget" owl="1">
+        <div class="modal-dialog">
+            <div class="popup popup-textinput" style="height: 300px !important;">
+                <p class="title" style="background-color: rgb(110,200,155); color: #fff;">Note</p>
+                <p class="body" style="color: #0075AC;">Enter Note Here</p>
+                 <input id ="entered_note" type="text" class='input' name="code" style="margin-left:50px"></input>
+                <div class="footer" style="background-color: rgb(110,200,155); color: #fff;position:fixed; bottom:0;">
+                    <div class="button cancel" style="background-color: #0075AC; color: #fff;" t-on-click="go_back_screen">
+                        Cancel 
+                    </div>
+                    <div class="button confirm" id="apply_note" style="background-color: #0075AC; color: #fff;" t-on-click="renderElement">
+                        Apply 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="CustomErrorPopup" owl="1">
+            <div role="dialog" class="modal-dialog">
+                <Draggable>
+                    <div class="popup popup-error">
+                        <header class="title drag-handle">
+                            <t t-esc="props.title" />
+                        </header>
+                        <main class="body traceback" style="font-size: 24px;text-align: center;"><t t-esc="props.body"/></main>
+                        <footer class="footer">
+                            <div class="button go_back_screen" t-on-click="go_back_screen">
+                                Confirm
+                            </div>
+                        </footer>
+                    </div>
+                </Draggable>
+            </div>
+        </t>
+
+    <!-- <t t-name="Orderline"> -->
+    <t t-name="Orderline" t-inherit="point_of_sale.Orderline" t-inherit-mode="extension" owl="1">
+        <xpath expr="//span[hasclass('product-name')]" position="inside">        
+                <t t-if="props.line.get_to_stay()">
+                    <t t-esc="line"/>
+                    <span class="product-name">
+                           <i>  Note : <t t-esc="props.line.get_to_stay()" /> </i>
+                    </span>
+                </t>
+        </xpath>
+    </t>
+
+<t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+    <xpath expr="//span[hasclass('pos-receipt-right-align')]" position="after">
+
+         <t t-if="line.notes">
+            <div class="pos-receipt-left-padding">
+                Note: <t t-esc='line.notes' />
+            </div>
+         </t>
+    </xpath>
+</t>
+
+
+
+   </templates>
